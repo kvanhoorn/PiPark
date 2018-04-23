@@ -18,8 +18,10 @@ import urllib
 from PIL import Image, ImageTk
 
 import senddata
-import imageread
+# import imageread
 import data.settings as s
+
+import urllib, cStringIO
 
 try:
     # check setup_data exists
@@ -207,12 +209,13 @@ class MainApplication(tk.Frame):
             if not isinstance(height, int): raise TypeError
             
             # load the image into the canvas
-            photo = ImageTk.PhotoImage(Image.open(image_address))
+            url = "http://192.168.4.197:88/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr=admin&pwd=QNHAdmin1!"
+            file = cStringIO.StringIO(urllib.urlopen(url).read())
+
+            photo = ImageTk.PhotoImage(Image.open(file))
             canvas.create_image((width, height), image = photo)
-            canvas.image = photo
             
-            # image load successful
-            return True
+            canvas.image = photo
         
         except TypeError:
             # arguments of incorrect data type, load unsuccessful
@@ -315,13 +318,13 @@ def run():
         camera.capture(image_location)
         print "INFO: New image saved to:", image_location
 
-        try:
-            # load image for processing
-            image = imageread.Image.open(image_location)
-            pixels = image.load()
-        except:
-            print "ERROR: The image has failed to load. Check camera setup. "
-            sys.exit(1)
+#         try:
+#             # load image for processing
+#             image = imageread.Image.open(image_location)
+#             pixels = image.load()
+#         except:
+#             print "ERROR: The image has failed to load. Check camera setup. "
+#             sys.exit(1)
 
         # setup space dimensions and averages, and if verbose, print to terminal
         for space in space_boxes:

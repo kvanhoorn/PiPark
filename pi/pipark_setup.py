@@ -15,11 +15,13 @@ import Tkinter as tk
 import tkMessageBox
 from PIL import Image, ImageTk
 
-import imageread
+# import imageread
 import main
 import data.settings as s
 from setup_classes import ParkingSpace, Boxes
 from ToggleButton import ToggleButton
+
+import urllib, cStringIO
 
 # ==============================================================================
 #
@@ -46,6 +48,7 @@ class Application(tk.Frame):
     
     # image load/save locoations
     SETUP_IMAGE = "./images/setup.jpeg"
+    # DEFAULT_IMAGE = "./images/default.jpeg"
     DEFAULT_IMAGE = "./images/default.jpeg"
     
     
@@ -120,8 +123,12 @@ class Application(tk.Frame):
             if not isinstance(height, int): raise TypeError
             
             # load the image into the canvas
-            photo = ImageTk.PhotoImage(Image.open(image_address))
+            url = "http://192.168.4.197:88/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr=admin&pwd=QNHAdmin1!"
+            file = cStringIO.StringIO(urllib.urlopen(url).read())
+
+            photo = ImageTk.PhotoImage(Image.open(file))
             canvas.create_image((width, height), image = photo)
+            
             canvas.image = photo
             
             # image load successful
